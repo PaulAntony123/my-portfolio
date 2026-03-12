@@ -1,3 +1,59 @@
+// Loading Screen Handler
+window.addEventListener('load', () => {
+    const loadingScreen = document.getElementById('loading-screen');
+    if (loadingScreen) {
+        // Animate percentage counter
+        const percentEl = loadingScreen.querySelector('.loading-percentage');
+        const subtitleEl = loadingScreen.querySelector('.loading-subtitle');
+        const loadingMessages = [
+            'Building terrain...',
+            'Spawning mobs...',
+            'Planting trees...',
+            'Generating ores...',
+            'Lighting sky...',
+            'Almost there...'
+        ];
+        let msgIndex = 0;
+
+        if (percentEl) {
+            let progress = 0;
+            const percentInterval = setInterval(() => {
+                progress += 1;
+                if (progress > 100) progress = 100;
+                percentEl.textContent = progress + '%';
+                if (progress >= 100) clearInterval(percentInterval);
+            }, 30); // ~3s to reach 100
+        }
+
+        if (subtitleEl) {
+            const msgInterval = setInterval(() => {
+                msgIndex = (msgIndex + 1) % loadingMessages.length;
+                subtitleEl.style.opacity = '0';
+                setTimeout(() => {
+                    subtitleEl.textContent = loadingMessages[msgIndex];
+                    subtitleEl.style.opacity = '1';
+                }, 200);
+            }, 500);
+            // Clear when loading screen hides
+            setTimeout(() => clearInterval(msgInterval), 3200);
+        }
+        // Ensure the loading bar animation has time to be seen (e.g., 3 seconds minimum)
+        setTimeout(() => {
+            loadingScreen.classList.add('hidden');
+            
+            // Trigger Hero Typewriter after loading screen starts fading
+            if (typeof startTypewriter === 'function') {
+                setTimeout(startTypewriter, 500); // Small delay after fade starts
+            }
+
+            // Remove from DOM after transition to keep performance high
+            setTimeout(() => {
+                loadingScreen.remove();
+            }, 800);
+        }, 3200);
+    }
+});
+
 document.addEventListener('DOMContentLoaded', () => {
     // Mobile Navigation & Hamburger
     const hamburger = document.getElementById('hamburger');
@@ -284,8 +340,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 setTimeout(typeWriter, 50); // Typing speed
             }
         }
-        // Start typing slightly after load
-        setTimeout(typeWriter, 1000);
+        
+        // Define global-ish function to trigger this
+        window.startTypewriter = () => {
+             typeWriter();
+        };
     }
 
     // Back to Top Button
@@ -386,4 +445,108 @@ document.addEventListener('DOMContentLoaded', () => {
             card.style.transition = 'all 0.1s ease';
         });
     });
+
+    // Minecraft Advancement System
+    const advancementToast = document.getElementById('advancement-toast');
+    const advancementDesc = document.getElementById('advancement-desc');
+    let isAdvancementShowing = false;
+    let advancementQueue = [];
+
+    function showAdvancement(text) {
+        if (isAdvancementShowing) {
+            advancementQueue.push(text);
+            return;
+        }
+        
+        isAdvancementShowing = true;
+        advancementDesc.innerText = `"${text}"`;
+        
+        // Play levelup/chime sound if desired
+        playClickSound(); // Temporary feedback ping
+        
+        advancementToast.classList.add('show');
+        
+        setTimeout(() => {
+            advancementToast.classList.remove('show');
+            setTimeout(() => {
+                isAdvancementShowing = false;
+                if (advancementQueue.length > 0) {
+                    showAdvancement(advancementQueue.shift());
+                }
+            }, 600); // Wait for transition out
+        }, 4000); // Show for 4 seconds
+    }
+
+    const advancementObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                if (entry.target.id === 'about') {
+                    showAdvancement('Getting an Upgrade');
+                } else if (entry.target.id === 'contact') {
+                    showAdvancement('The End?');
+                }
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.5 });
+    
+    advancementObserver.observe(document.getElementById('about'));
+    advancementObserver.observe(document.getElementById('contact'));
+
+    // Easter Egg (type "minecraft")
+    let secretCode = "minecraft";
+    let inputBuffer = "";
+    const creeper = document.getElementById('creeper-easter-egg');
+
+    document.addEventListener('keydown', (e) => {
+        // Only accept single printable characters (ignore Shift, Control, Alt, etc.)
+        if (e.key.length !== 1) return;
+        
+        inputBuffer += e.key.toLowerCase();
+        
+        // Keep buffer size limited to length of secret code
+        if (inputBuffer.length > secretCode.length) {
+            inputBuffer = inputBuffer.substring(inputBuffer.length - secretCode.length);
+        }
+        
+        if (inputBuffer === secretCode) {
+            inputBuffer = ""; // Reset
+            
+            // Flash the screen green first
+            const flash = document.createElement('div');
+            flash.style.cssText = 'position:fixed;top:0;left:0;width:100vw;height:100vh;background:#0da135;z-index:10000;opacity:0;transition:opacity 0.15s;pointer-events:none;';
+            document.body.appendChild(flash);
+            requestAnimationFrame(() => {
+                flash.style.opacity = '0.6';
+                setTimeout(() => {
+                    flash.style.opacity = '0';
+                    setTimeout(() => flash.remove(), 300);
+                }, 200);
+            });
+
+            // Show creeper
+            setTimeout(() => {
+                creeper.classList.add('active');
+            }, 300);
+            
+            // Play a scary synth "hiss" warning
+            initAudio();
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(100, audioCtx.currentTime);
+            osc.frequency.linearRampToValueAtTime(800, audioCtx.currentTime + 1.5);
+            gain.gain.setValueAtTime(0, audioCtx.currentTime);
+            gain.gain.linearRampToValueAtTime(0.3, audioCtx.currentTime + 1.5);
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start();
+            osc.stop(audioCtx.currentTime + 1.5);
+            
+            setTimeout(() => {
+                creeper.classList.remove('active');
+            }, 4000);
+        }
+    });
+
 });
