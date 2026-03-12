@@ -12,7 +12,34 @@
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
 </head>
 
-<body>
+<body class="theme-day">
+    <!-- Minecraft Loading Screen -->
+    <div id="loading-screen">
+        <!-- Floating particles -->
+        <div class="loading-particles">
+            <span></span><span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span><span></span><span></span>
+        </div>
+        <div class="loading-content">
+            <!-- Spinning 3D Grass Block -->
+            <div class="loading-block">
+                <div class="block-face block-top"></div>
+                <div class="block-face block-front"></div>
+                <div class="block-face block-right"></div>
+                <div class="block-face block-back"></div>
+                <div class="block-face block-left"></div>
+                <div class="block-face block-bottom"></div>
+            </div>
+            <h2 class="loading-title">Loading World<span class="loading-dots"></span></h2>
+            <div class="loading-bar-container">
+                <div class="loading-bar-fill"></div>
+                <span class="loading-percentage">0%</span>
+            </div>
+            <p class="loading-subtitle">Building terrain...</p>
+            <p class="loading-tip">💡 Tip: Type "minecraft" for a surprise!</p>
+        </div>
+    </div>
+
     <!-- Nether Portal Transition Overlay -->
     <div id="portal-overlay"></div>
 
@@ -20,13 +47,15 @@
     <nav class="navbar" id="navbar">
         <a href="#hero" class="logo">MC_PORTFOLIO</a>
         <div class="nav-links" id="nav-links">
+            <h2 class="mobile-menu-title">Game Paused</h2>
             <a href="#about" class="nav-item">About</a>
             <a href="#projects" class="nav-item">Experience</a>
             <a href="#gallery" class="nav-item">Gallery</a>
             <a href="#contact" class="nav-item">Contact</a>
         </div>
         <div style="display: flex; gap: 15px; align-items: center;">
-            <button id="theme-toggle" class="mc-button" style="padding: 5px 10px; font-size: 1.2rem;" aria-label="Toggle Theme">🌞</button>
+            <button id="theme-toggle" class="mc-button" style="padding: 5px 10px; font-size: 1.2rem;"
+                aria-label="Toggle Theme">🌙</button>
             <div class="hamburger" id="hamburger">
                 <span></span>
                 <span></span>
@@ -43,7 +72,8 @@
         <canvas id="particles-canvas"></canvas>
         <div class="hero-content fade-in-up">
             <h1 class="hero-title">Paul Antony</h1>
-            <p class="hero-subtitle" id="typewriter-text" data-text="ECE Student | Tech Enthusiast | Web Developer">&nbsp;</p>
+            <p class="hero-subtitle" id="typewriter-text" data-text="ECE Student | Tech Enthusiast | Web Developer">
+                &nbsp;</p>
             <a href="#projects" class="btn btn-primary mc-button">
                 <span>Explore Builds</span>
                 <div class="btn-glint"></div>
@@ -63,6 +93,8 @@
             <h2 class="section-title">Inventory <span class="subtitle">(About Me)</span></h2>
             <div class="about-content grid">
                 <div class="about-text glass-card hover-glow">
+                    <!-- Place your profile photo link in the src below -->
+                    <img src="placeholder.jpg" alt="Paul Antony" class="profile-photo">
                     <h3>Hello, I'm Paul!</h3>
                     <p>I am a second-year Electronics and Communication Engineering student with a strong interest in
                         technology and innovation. I enjoy exploring programming, web development, and UI design.</p>
@@ -116,7 +148,7 @@
                 <div class="project-card glass-card hover-glow">
                     <div class="project-img bg-dirt">
                         <div class="project-overlay">
-                            <a href="#" class="btn btn-secondary mc-button">View</a>
+                            <a href="https://visatieeesb-gray.vercel.app/" class="btn btn-secondary mc-button">View</a>
                         </div>
                     </div>
                     <div class="project-info">
@@ -216,12 +248,27 @@
             <a href="#hero" class="logo">MC_PORTFOLIO</a>
             <p>&copy; 2026 Crafted pixel by pixel.</p>
             <div class="social-links">
-                <a href="#" class="btn btn-icon mc-button">X</a>
-                <a href="#" class="btn btn-icon mc-button">GH</a>
-                <a href="#" class="btn btn-icon mc-button">LI</a>
+                <a href="[EMAIL_ADDRESS]" class="btn btn-icon mc-button">Gmail</a>
+                <a href="https://github.com/PaulAntony123" class="btn btn-icon mc-button">GitHub</a>
+                <a href="https://www.linkedin.com/in/paul-antony-4498ab3a5" class="btn btn-icon mc-button">Linkedin</a>
             </div>
         </div>
     </footer>
+
+    <!-- Advancement Popup -->
+    <div id="advancement-toast" class="advancement-toast">
+        <div class="advancement-icon"></div>
+        <div class="advancement-text">
+            <h4>Advancement Made!</h4>
+            <p id="advancement-desc"></p>
+        </div>
+    </div>
+
+    <!-- Easter Egg Creeper -->
+    <div id="creeper-easter-egg">
+        <div class="creeper-eyes"></div>
+        <div class="creeper-mouth"></div>
+    </div>
 
     <script src="script.js"></script>
 </body>
