@@ -411,6 +411,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // 3D Glass Card Tilt Effect (Glassmorphism + 3D)
     const tiltCards = document.querySelectorAll('.glass-card');
     tiltCards.forEach(card => {
+        if (card.classList.contains('no-tilt')) return;
+        
         card.addEventListener('mousemove', (e) => {
             const rect = card.getBoundingClientRect();
             const x = e.clientX - rect.left;
@@ -548,5 +550,33 @@ document.addEventListener('DOMContentLoaded', () => {
             }, 4000);
         }
     });
+
+    // Certificates Modal Logic
+    const certModal = document.getElementById('certificates-modal');
+    const viewCertBtn = document.getElementById('view-certificates-btn');
+    const closeCertBtn = certModal ? certModal.querySelector('.close-modal') : null;
+
+    if (viewCertBtn && certModal) {
+        viewCertBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            certModal.classList.add('active');
+            document.body.style.overflow = 'hidden'; // Prevent background scroll
+        });
+    }
+
+    if (closeCertBtn && certModal) {
+        closeCertBtn.addEventListener('click', () => {
+            certModal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        });
+
+        // Close on outside click
+        certModal.addEventListener('click', (e) => {
+            if (e.target === certModal) {
+                certModal.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            }
+        });
+    }
 
 });
